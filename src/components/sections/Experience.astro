@@ -7,11 +7,11 @@ const Data = [
     desc: "Years of experience",
   },
   {
-    number: "10k+",
+    number: "+10k",
     desc: "Cars repaired",
   },
   {
-    number: "15k+",
+    number: "+15k",
     desc: "Clients served",
   },
 ];
@@ -20,10 +20,10 @@ const Data = [
 <Section grayBackground>
   <div class="flex flex-row text-center items-center justify-between">
     {
-      Data.map((item, index) => (
+      Data.map((item) => (
         <div class="">
-          <div class="text-3xl md:text-7xl font-bold text-gray-400">
-            {item.number}
+          <div class="experience-number || text-3xl md:text-7xl font-bold text-gray-400" data-final={item.number}>
+            0
           </div>
           <div class="text-sm md:text-xl text-gray-500 text-center">
             {item.desc}
@@ -33,3 +33,39 @@ const Data = [
     }
   </div>
 </Section>
+
+<script>
+      const experienceNumbers = document.querySelectorAll(".experience-number") as NodeListOf<HTMLElement>;
+
+      const observerOptions = {
+        root: null,
+        rootMargin: "0px",
+        threshold: 1 // 50% of the element must be visible
+      };
+
+      const observerCallback = (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const item = entry.target;
+            const finalNumber = item.getAttribute('data-final');
+
+            let interval = setInterval(() => {
+              const randomNumber = Math.floor(Math.random() * 100);
+              item.innerText = randomNumber.toString();
+            }, 50);
+
+            setTimeout(() => {
+              clearInterval(interval);
+              item.innerText = finalNumber;
+              observer.unobserve(item); // Stop observing once the animation is done
+            }, 1100);
+          }
+        });
+      };
+
+      const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+      experienceNumbers.forEach((item) => {
+        observer.observe(item);
+    });
+  </script>
